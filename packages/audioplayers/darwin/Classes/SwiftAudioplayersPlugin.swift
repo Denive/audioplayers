@@ -394,6 +394,9 @@ public class SwiftAudioplayersPlugin: NSObject, FlutterPlugin {
         options: AVAudioSession.CategoryOptions = [],
         active: Bool? = nil
     ) {
+        print("Skipping AVAudioSession changes.")
+        return
+        
         do {
             let session = AVAudioSession.sharedInstance()
             if let category = category {

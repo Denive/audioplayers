@@ -20,34 +20,27 @@ import 'notifications/notification_service.dart';
 /// It holds methods to play, loop, pause, stop, seek the audio, and some useful
 /// hooks for handlers and callbacks.
 class AudioPlayer {
-  static final MethodChannel _channel =
-      const MethodChannel('xyz.luan/audioplayers')
-        ..setMethodCallHandler(platformCallHandler);
+  static final MethodChannel _channel = const MethodChannel('xyz.luan/audioplayers')..setMethodCallHandler(platformCallHandler);
 
   static const _uuid = Uuid();
 
-  final StreamController<PlayerState> _playerStateController =
-      StreamController<PlayerState>.broadcast();
+  final StreamController<PlayerState> _playerStateController = StreamController<PlayerState>.broadcast();
 
-  final StreamController<PlayerState> _notificationPlayerStateController =
-      StreamController<PlayerState>.broadcast();
+  final StreamController<PlayerState> _notificationPlayerStateController = StreamController<PlayerState>.broadcast();
 
-  final StreamController<Duration> _positionController =
-      StreamController<Duration>.broadcast();
+  final StreamController<Duration> _positionController = StreamController<Duration>.broadcast();
 
-  final StreamController<Duration> _durationController =
-      StreamController<Duration>.broadcast();
+  final StreamController<Duration> _durationController = StreamController<Duration>.broadcast();
 
-  final StreamController<void> _completionController =
-      StreamController<void>.broadcast();
+  final StreamController<void> _completionController = StreamController<void>.broadcast();
 
-  final StreamController<bool> _seekCompleteController =
-      StreamController<bool>.broadcast();
+  final StreamController<bool> _seekCompleteController = StreamController<bool>.broadcast();
 
-  final StreamController<String> _errorController =
-      StreamController<String>.broadcast();
+  final StreamController<String> _errorController = StreamController<String>.broadcast();
 
   PlayingRoute _playingRouteState = PlayingRoute.SPEAKERS;
+
+  PlayingRoute get playingRouteState => _playingRouteState;
 
   /// Reference [Map] with all the players created by the application.
   ///
@@ -80,8 +73,7 @@ class AudioPlayer {
   Stream<PlayerState> get onPlayerStateChanged => _playerStateController.stream;
 
   /// Stream of changes on player state coming from notification area in iOS.
-  Stream<PlayerState> get onNotificationPlayerStateChanged =>
-      _notificationPlayerStateController.stream;
+  Stream<PlayerState> get onNotificationPlayerStateChanged => _notificationPlayerStateController.stream;
 
   /// Stream of changes on audio position.
   ///
@@ -95,8 +87,7 @@ class AudioPlayer {
   ///
   /// An event is going to be sent as soon as the audio duration is available
   /// (it might take a while to download or buffer it).
-  Stream<Duration> get onDurationChanged =>
-      _durationController.stream.distinct();
+  Stream<Duration> get onDurationChanged => _durationController.stream.distinct();
 
   /// Stream of player completions.
   ///
@@ -126,8 +117,7 @@ class AudioPlayer {
   final PlayerMode mode;
 
   /// Creates a new instance and assigns an unique id to it.
-  AudioPlayer({this.mode = PlayerMode.MEDIA_PLAYER, String? playerId})
-      : playerId = playerId ?? _uuid.v4() {
+  AudioPlayer({this.mode = PlayerMode.MEDIA_PLAYER, String? playerId}) : playerId = playerId ?? _uuid.v4() {
     players[this.playerId] = this;
     notificationService = NotificationService(_invokeMethod);
   }
@@ -402,8 +392,7 @@ class AudioPlayer {
     switch (call.method) {
       case 'audio.onNotificationPlayerStateChanged':
         final isPlaying = callArgs['value'] as bool;
-        player.notificationState =
-            isPlaying ? PlayerState.PLAYING : PlayerState.PAUSED;
+        player.notificationState = isPlaying ? PlayerState.PLAYING : PlayerState.PAUSED;
         break;
       case 'audio.onDuration':
         final millis = callArgs['value'] as int;
@@ -493,9 +482,7 @@ class AudioPlayer {
   }
 
   bool isLocalUrl(String url) {
-    return url.startsWith('/') ||
-        url.startsWith('file://') ||
-        url.substring(1).startsWith(':\\');
+    return url.startsWith('/') || url.startsWith('file://') || url.substring(1).startsWith(':\\');
   }
 
   static bool _isAndroid() {
